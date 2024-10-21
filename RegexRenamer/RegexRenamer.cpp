@@ -1,6 +1,7 @@
 #include "RegexRenamer.h"
 #include <qfiledialog.h>
 #include <qmessagebox.h>
+#include <qcoreapplication.h>
 
 
 RegexRenamer::RegexRenamer(QWidget *parent)
@@ -38,8 +39,6 @@ RegexRenamer::RegexRenamer(QWidget *parent)
 
 		setLayout(&layout_main);
 
-		// SrcDirDefault value
-		edit_src.setText(QDir::currentPath());
 
 		// connect
 		connect(&btn_src, &QPushButton::clicked, 
@@ -69,6 +68,8 @@ RegexRenamer::RegexRenamer(QWidget *parent)
 		connect(&btn_rename, &QPushButton::clicked,
 			this, &RegexRenamer::onRename);
 
+
+
 		onRenameUpdate();
 }
 
@@ -88,13 +89,34 @@ void RegexRenamer::onBrowseSrc() {
 
 void RegexRenamer::onRenameUpdate()
 {
+
+
+	// SrcDirDefault value
+
+	// system directory or current application directory is not allowed
+
+
+	if (QDir::currentPath().toLower().trimmed()
+			== QString("C:/WINDOWS/system32").toLower().trimmed()) {
+		return;
+	}
+
+	if (QDir::currentPath().toLower().trimmed()
+		== QCoreApplication::applicationDirPath().toLower().trimmed()) {
+		return;
+	}
+
+	edit_src.setText(QDir::currentPath());
 	QString srcDir = edit_src.text();
+
+
 	QDir dir(srcDir);
 	if (!dir.exists()) {
 		QMessageBox::warning(this, "Warning", "Directory does not exist");
+		return;
 	}
-   auto src_file_list = dir.entryInfoList(QDir::Files);
 
+   auto src_file_list = dir.entryInfoList(QDir::Files);
 	updatePreview(src_file_list);
 }
 
