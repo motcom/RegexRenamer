@@ -7,6 +7,10 @@
 RegexRenamer::RegexRenamer(QWidget *parent)
     : QWidget(parent)
 {
+	//icon setting
+		setWindowTitle("RegexRenamer");
+		setWindowIcon(QIcon(":/Icon/Icon/RegexRenamerIco.ico"));
+
 		layout_browse.addWidget(&label_src, 0, 0);
 		layout_browse.addWidget(&edit_src, 0, 1);
 		layout_browse.addWidget(&btn_src, 0, 2);
@@ -68,7 +72,7 @@ RegexRenamer::RegexRenamer(QWidget *parent)
 		connect(&btn_rename, &QPushButton::clicked,
 			this, &RegexRenamer::onRename);
 
-
+		edit_src.setText(QDir::currentPath());
 
 		onRenameUpdate();
 }
@@ -89,25 +93,19 @@ void RegexRenamer::onBrowseSrc() {
 
 void RegexRenamer::onRenameUpdate()
 {
-
-
-	// SrcDirDefault value
+	QString srcDir = edit_src.text();
 
 	// system directory or current application directory is not allowed
-
-
-	if (QDir::currentPath().toLower().trimmed()
+	if (srcDir.toLower().trimmed()
 			== QString("C:/WINDOWS/system32").toLower().trimmed()) {
 		return;
 	}
 
-	if (QDir::currentPath().toLower().trimmed()
+	if (srcDir.toLower().trimmed()
 		== QCoreApplication::applicationDirPath().toLower().trimmed()) {
 		return;
 	}
 
-	edit_src.setText(QDir::currentPath());
-	QString srcDir = edit_src.text();
 
 
 	QDir dir(srcDir);
